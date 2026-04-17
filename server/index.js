@@ -1,15 +1,25 @@
 import http from 'node:http'
+import path from 'node:path'
+import { fileURLToPath } from 'node:url'
 import express from 'express'
 import { Server } from 'socket.io'
-import { CLIENT_ORIGIN, SERVER_PORT } from './config.js'
+import { SERVER_PORT } from './config.js'
 import { createRoomStore } from './store.js'
 import { registerSocketHandlers } from './socketServer.js'
+
+const __dirname = path.dirname(fileURLToPath(import.meta.url))
+const distDir = path.join(__dirname, '../dist')
 
 const app = express()
 app.use(express.json())
 
 app.get('/health', (_request, response) => {
   response.json({ ok: true })
+})
+
+app.use(express.static(distDir))
+app.get('*', (_request, response) => {
+  response.sendFile(path.join(distDir, 'index.html'))
 })
 
 const httpServer = http.createServer(app)
