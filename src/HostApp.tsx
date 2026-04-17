@@ -615,8 +615,6 @@ export default function HostApp({ onExit }: { onExit: () => void }) {
 
   async function handleEndGame() {
     await socketApiRef.current!.endGame(roomCode)
-    localStorage.removeItem(HOST_SESSION_KEY)
-    onExit()
   }
 
   async function handleRestartGame() {

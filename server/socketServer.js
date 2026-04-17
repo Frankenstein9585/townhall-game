@@ -269,9 +269,12 @@ export function registerSocketHandlers(io, store) {
     socket.on('host:end_game', async (payload, ack) => {
       const room = await store.getRoom(payload?.code)
       if (!requireRoom(room, ack)) return
-      await store.deleteRoom(room.code)
-      io.to(roomChannel(room.code)).emit('room:closed')
+      room.state.phase = 'game-over'
+      room.public.currentPuzzle = null
+      room.public.revealedAnswer = null
+      await store.saveRoom(room.code, room)
       ack?.({ ok: true })
+      await broadcastRoom(io, room)
     })
 
     socket.on('host:restart_game', async (payload, ack) => {
