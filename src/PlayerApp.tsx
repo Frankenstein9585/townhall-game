@@ -553,6 +553,11 @@ export default function PlayerApp({ onExit }: { onExit: () => void }) {
             if (snap.serverNow) clockOffsetRef.current = Date.now() - snap.serverNow
             setRoomSnapshot(snap)
           })
+          api.onRoomClosed(() => {
+            localStorage.removeItem(PLAYER_SESSION_KEY)
+            setPhase('join')
+            phaseRef.current = 'join'
+          })
         } catch {
           localStorage.removeItem(PLAYER_SESSION_KEY)
           setPhase('join')
@@ -578,6 +583,11 @@ export default function PlayerApp({ onExit }: { onExit: () => void }) {
     api.onRoomState(snap => {
       if (snap.serverNow) clockOffsetRef.current = Date.now() - snap.serverNow
       setRoomSnapshot(snap)
+    })
+    api.onRoomClosed(() => {
+      localStorage.removeItem(PLAYER_SESSION_KEY)
+      setPhase('join')
+      phaseRef.current = 'join'
     })
   }, [])
 
@@ -610,10 +620,8 @@ export default function PlayerApp({ onExit }: { onExit: () => void }) {
   useEffect(() => {
     if (!gamePhase) return
     if (gamePhase === 'lobby') {
-      if (phaseRef.current === 'reconnecting') {
-        setPhase('lobby')
-        phaseRef.current = 'lobby'
-      }
+      setPhase('lobby')
+      phaseRef.current = 'lobby'
       return
     }
     if (gamePhase === 'puzzle-active') {

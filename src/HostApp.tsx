@@ -540,7 +540,12 @@ export default function HostApp({ onExit }: { onExit: () => void }) {
       setPowerUpFeed(snapshot.powerupEvents)
       const puzzleKey = String(snapshot.state.currentPuzzleIndex)
       setAnsweredCount(Object.keys(snapshot.answers?.[puzzleKey] ?? {}).length)
-      if (snapshot.state.phase === 'puzzle-active') setHostPhase('puzzle-active')
+      if (snapshot.state.phase === 'lobby') {
+        setHostPhase('lobby')
+        setDeltas({})
+        setWrongSubmissions([])
+        setAnsweredCount(0)
+      } else if (snapshot.state.phase === 'puzzle-active') setHostPhase('puzzle-active')
       else if (snapshot.state.phase === 'puzzle-revealed') setHostPhase('puzzle-revealed')
       else if (snapshot.state.phase === 'game-over') setHostPhase('game-over')
     })
@@ -610,6 +615,12 @@ export default function HostApp({ onExit }: { onExit: () => void }) {
 
   async function handleEndGame() {
     await socketApiRef.current!.endGame(roomCode)
+    localStorage.removeItem(HOST_SESSION_KEY)
+    onExit()
+  }
+
+  async function handleRestartGame() {
+    await socketApiRef.current!.restartGame(roomCode)
   }
 
   async function handleNext() {
@@ -705,7 +716,7 @@ export default function HostApp({ onExit }: { onExit: () => void }) {
           powerUpDropping={powerUpDropping}
           onNext={handleNext}
           onEndGame={handleEndGame}
-          onRestart={onExit}
+          onRestart={handleRestartGame}
         />
       </div>
     )

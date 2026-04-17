@@ -123,6 +123,15 @@ export class SocketApi {
   endGame(code: string) {
     return this.emitWithAck<{ ok: boolean }>('host:end_game', { code })
   }
+
+  restartGame(code: string) {
+    return this.emitWithAck<{ ok: boolean }>('host:restart_game', { code })
+  }
+
+  onRoomClosed(handler: () => void) {
+    this.socket.on('room:closed', handler)
+    return () => this.socket.off('room:closed', handler)
+  }
 }
 
 export function createSocketApi() {
