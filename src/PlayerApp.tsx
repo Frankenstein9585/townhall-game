@@ -253,6 +253,8 @@ function PlayerPuzzleScreen({
   const [inputFocused, setInputFocused] = useState(false)
   const prevPowerUps = useRef<PowerUpType[]>(playerData.powerUps ?? [])
   const inputRef = useRef<HTMLInputElement>(null)
+  const answerRef = useRef(answer)
+  useEffect(() => { answerRef.current = answer }, [answer])
 
   useEffect(() => {
     const prev = prevPowerUps.current ?? []
@@ -279,7 +281,9 @@ function PlayerPuzzleScreen({
 
   async function autoSubmit() {
     if (submitted) return
-    await doSubmit(answer)
+    const current = answerRef.current
+    if (!current.trim()) return
+    await doSubmit(current)
   }
 
   async function doSubmit(ans: string) {
@@ -359,7 +363,7 @@ function PlayerPuzzleScreen({
         onBlur={() => setInputFocused(false)}
         autoFocus
         disabled={remaining === 0 || submitted}
-        className="fixed top-0 left-0 w-px h-px opacity-0 pointer-events-none"
+        className="fixed top-0 left-0 w-px h-px opacity-0 pointer-events-none text-base"
         aria-label="Answer input"
       />
 
