@@ -118,6 +118,10 @@ export class SocketApi {
   distributePowerUps(code: string) {
     return this.emitWithAck<{ ok: boolean }>('host:distribute_powerups', { code })
   }
+
+  endGame(code: string) {
+    return this.emitWithAck<{ ok: boolean }>('host:end_game', { code })
+  }
 }
 
 export function createSocketApi() {

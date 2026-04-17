@@ -265,6 +265,17 @@ export function registerSocketHandlers(io, store) {
       await broadcastRoom(io, room)
     })
 
+    socket.on('host:end_game', async (payload, ack) => {
+      const room = await store.getRoom(payload?.code)
+      if (!requireRoom(room, ack)) return
+      room.state.phase = 'game-over'
+      room.public.currentPuzzle = null
+      room.public.revealedAnswer = null
+      await store.saveRoom(room.code, room)
+      ack?.({ ok: true })
+      await broadcastRoom(io, room)
+    })
+
     socket.on('host:distribute_powerups', async (payload, ack) => {
       const room = await store.getRoom(payload?.code)
       if (!requireRoom(room, ack)) return

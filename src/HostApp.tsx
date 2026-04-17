@@ -393,7 +393,7 @@ function HostPuzzleScreen({
 // ─── Results Screen (Host) ────────────────────────────────────────────────────
 
 function HostResultsScreen({
-  puzzle, puzzleIndex, totalPuzzles, players, deltas, wrongSubmissions, powerUpDropping, onNext,
+  puzzle, puzzleIndex, totalPuzzles, players, deltas, wrongSubmissions, powerUpDropping, onNext, onEndGame, onRestart,
 }: {
   puzzle: Puzzle
   puzzleIndex: number
@@ -403,6 +403,8 @@ function HostResultsScreen({
   wrongSubmissions: string[]
   powerUpDropping: boolean
   onNext: () => void
+  onEndGame: () => void
+  onRestart: () => void
 }) {
   const correctCount = Object.values(deltas).filter(d => d.correct).length
 
@@ -453,6 +455,20 @@ function HostResultsScreen({
       >
         {puzzleIndex + 1 >= totalPuzzles ? 'See Final Results →' : 'Next Puzzle →'}
       </button>
+      <div className="flex gap-3 mt-3">
+        <button
+          onClick={onEndGame}
+          className="flex-1 py-3 rounded-lg bg-gray-800 hover:bg-gray-700 border border-gray-700 text-white transition-colors font-semibold text-sm"
+        >
+          End Game
+        </button>
+        <button
+          onClick={onRestart}
+          className="flex-1 py-3 rounded-lg bg-gray-800 hover:bg-gray-700 border border-gray-700 text-white transition-colors font-semibold text-sm"
+        >
+          Restart Game
+        </button>
+      </div>
     </div>
   )
 }
@@ -590,6 +606,10 @@ export default function HostApp({ onExit }: { onExit: () => void }) {
     setWrongSubmissions(roundWrongs)
   }
 
+  async function handleEndGame() {
+    await socketApiRef.current!.endGame(roomCode)
+  }
+
   async function handleNext() {
     const idx = gameState?.currentPuzzleIndex ?? 0
     const isDrop = [3, 6, 9, 12, 15, 18, 21, 24, 27].includes(idx + 1)
@@ -682,6 +702,8 @@ export default function HostApp({ onExit }: { onExit: () => void }) {
           wrongSubmissions={wrongSubmissions}
           powerUpDropping={powerUpDropping}
           onNext={handleNext}
+          onEndGame={handleEndGame}
+          onRestart={onExit}
         />
       </div>
     )
