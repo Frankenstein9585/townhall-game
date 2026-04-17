@@ -37,7 +37,7 @@ export interface SocketRoomSnapshot {
 
 export class SocketApi {
   constructor() {
-    this.socket = io({
+    this.socket = io(import.meta.env.VITE_SOCKET_URL ?? '', {
       autoConnect: false,
       transports: ['websocket'],
     })
