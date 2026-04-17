@@ -282,7 +282,7 @@ function PlayerPuzzleScreen({
   async function autoSubmit() {
     if (submitted) return
     const current = answerRef.current
-    if (!current.trim()) return
+    if (!current.trim() && puzzle.type !== 'sudden-death') return
     await doSubmit(current)
   }
 
@@ -531,6 +531,7 @@ export default function PlayerApp({ onExit }: { onExit: () => void }) {
   const socketApiRef = useRef<SocketApi | null>(null)
   const phaseRef = useRef<PlayerPhase>('join')
   const prevEventCountRef = useRef(0)
+  const clockOffsetRef = useRef(0)
   const [sabotageToast, setSabotageToast] = useState<{ names: string[]; total: number } | null>(null)
 
   useEffect(() => {
@@ -548,7 +549,10 @@ export default function PlayerApp({ onExit }: { onExit: () => void }) {
           setRoomCode(savedCode)
           setPlayerId(savedId)
           setPlayerName(savedName)
-          api.onRoomState(snap => setRoomSnapshot(snap))
+          api.onRoomState(snap => {
+            if (snap.serverNow) clockOffsetRef.current = Date.now() - snap.serverNow
+            setRoomSnapshot(snap)
+          })
         } catch {
           localStorage.removeItem(PLAYER_SESSION_KEY)
           setPhase('join')
@@ -571,7 +575,10 @@ export default function PlayerApp({ onExit }: { onExit: () => void }) {
     setPlayerName(name)
     setPhase('lobby')
     phaseRef.current = 'lobby'
-    api.onRoomState(snap => setRoomSnapshot(snap))
+    api.onRoomState(snap => {
+      if (snap.serverNow) clockOffsetRef.current = Date.now() - snap.serverNow
+      setRoomSnapshot(snap)
+    })
   }, [])
 
   const currentPuzzleIndex = roomSnapshot?.state.currentPuzzleIndex ?? 0
@@ -662,7 +669,7 @@ export default function PlayerApp({ onExit }: { onExit: () => void }) {
           puzzle={currentPuzzle}
           puzzleIndex={currentPuzzleIndex}
           totalPuzzles={totalPuzzles}
-          timerStart={roomSnapshot?.state.timerStart ?? Date.now()}
+          timerStart={(roomSnapshot?.state.timerStart ?? Date.now()) + clockOffsetRef.current}
           timerDuration={roomSnapshot?.state.timerDuration ?? 15000}
           playerId={playerId}
           roomCode={roomCode}

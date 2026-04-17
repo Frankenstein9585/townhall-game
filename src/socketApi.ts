@@ -27,6 +27,7 @@ export interface SocketRoomSnapshot {
     correct: boolean
     powerUpUsed: PowerUpType | null
   }>>
+  serverNow?: number
   powerupEvents: Array<{
     player: string
     powerup: PowerUpType

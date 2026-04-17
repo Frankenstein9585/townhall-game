@@ -530,9 +530,11 @@ export default function HostApp({ onExit }: { onExit: () => void }) {
   const displayDeltas = toDisplayDeltas(players, deltas)
 
   const socketApiRef = useRef<SocketApi | null>(null)
+  const clockOffsetRef = useRef(0)
 
   function attachHostStateListener(api: SocketApi) {
     api.onHostState(snapshot => {
+      if (snapshot.serverNow) clockOffsetRef.current = Date.now() - snapshot.serverNow
       setPlayers(snapshot.players as Record<string, HostPlayerRecord>)
       setGameState(snapshot.state)
       setPowerUpFeed(snapshot.powerupEvents)
@@ -678,7 +680,7 @@ export default function HostApp({ onExit }: { onExit: () => void }) {
           puzzle={currentPuzzle}
           puzzleIndex={currentIdx}
           totalPuzzles={puzzles.length}
-          timerStart={gameState?.timerStart ?? Date.now()}
+          timerStart={(gameState?.timerStart ?? Date.now()) + clockOffsetRef.current}
           timerDuration={gameState?.timerDuration ?? 15000}
           players={displayPlayers}
           answeredCount={answeredCount}

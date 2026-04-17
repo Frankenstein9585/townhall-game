@@ -18,9 +18,10 @@ function generateRoomCode() {
 }
 
 async function broadcastRoom(io, room) {
-  io.to(roomChannel(room.code)).emit('room:state', buildPublicRoom(room))
+  const serverNow = Date.now()
+  io.to(roomChannel(room.code)).emit('room:state', { ...buildPublicRoom(room), serverNow })
   if (room.hostSocketId) {
-    io.to(room.hostSocketId).emit('host:state', buildHostRoom(room))
+    io.to(room.hostSocketId).emit('host:state', { ...buildHostRoom(room), serverNow })
   }
 }
 
