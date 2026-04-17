@@ -1,0 +1,20 @@
+{
+  "name": "townhall-game-functions",
+  "private": true,
+  "engines": {
+    "node": "20"
+  },
+  "main": "lib/index.js",
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "lint": "tsc -p tsconfig.json --noEmit",
+    "serve": "firebase emulators:start --only functions"
+  },
+  "dependencies": {
+    "firebase-admin": "^12.1.1",
+    "firebase-functions": "^5.0.1"
+  },
+  "devDependencies": {
+    "typescript": "^5.2.2"
+  }
+}

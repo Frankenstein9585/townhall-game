@@ -1,0 +1,274 @@
+[
+  {
+    "id": 1,
+    "tier": "general",
+    "type": "normal",
+    "image": "Sleep-on-it.png",
+    "answers": ["sleep on it"],
+    "hint": "Think about it before deciding"
+  },
+  {
+    "id": 2,
+    "tier": "general",
+    "type": "sudden-death",
+    "image": "Sleeping-on-the-job.png",
+    "answers": ["sleeping on the job"],
+    "hint": "Not doing what you were paid to do"
+  },
+  {
+    "id": 3,
+    "tier": "general",
+    "type": "normal",
+    "image": "Summer.png",
+    "answers": ["summer"],
+    "hint": "The hottest season of the year"
+  },
+  {
+    "id": 4,
+    "tier": "general",
+    "type": "normal",
+    "image": "Tennessee.png",
+    "answers": ["tennessee"],
+    "hint": "A US state famous for country music"
+  },
+  {
+    "id": 5,
+    "tier": "general",
+    "type": "normal",
+    "image": "Tennis-shoe.png",
+    "answers": ["tennis shoe", "tennis shoes", "sneaker", "sneakers"],
+    "hint": "A sport and footwear combined"
+  },
+  {
+    "id": 6,
+    "tier": "general",
+    "type": "normal",
+    "image": "Tombstone.png",
+    "answers": ["tombstone", "gravestone", "headstone"],
+    "hint": "Marks where someone is buried"
+  },
+  {
+    "id": 7,
+    "tier": "general",
+    "type": "normal",
+    "image": "Too-big-to-ignore.png",
+    "answers": ["too big to ignore", "too big to fail"],
+    "hint": "Said of things that cannot be overlooked"
+  },
+  {
+    "id": 8,
+    "tier": "general",
+    "type": "normal",
+    "image": "Top-secret.png",
+    "answers": ["top secret", "classified", "confidential"],
+    "hint": "Restricted info nobody is allowed to see"
+  },
+  {
+    "id": 9,
+    "tier": "general",
+    "type": "normal",
+    "image": "Travel-overseas.png",
+    "answers": ["travel overseas", "overseas travel", "international travel"],
+    "hint": "Going to another country across the sea"
+  },
+  {
+    "id": 10,
+    "tier": "general",
+    "type": "normal",
+    "image": "Trillion.png",
+    "answers": ["trillion", "one trillion"],
+    "hint": "A thousand billion"
+  },
+  {
+    "id": 11,
+    "tier": "general",
+    "type": "normal",
+    "image": "Tripod.png",
+    "answers": ["tripod"],
+    "hint": "A three-legged stand for cameras"
+  },
+  {
+    "id": 12,
+    "tier": "general",
+    "type": "normal",
+    "image": "Try-to-understand.png",
+    "answers": ["try to understand", "try and understand"],
+    "hint": "What you ask of someone who wont listen"
+  },
+  {
+    "id": 13,
+    "tier": "general",
+    "type": "normal",
+    "image": "Tuna-fish.png",
+    "answers": ["tuna fish", "tuna"],
+    "hint": "Popular for sandwiches and sushi"
+  },
+  {
+    "id": 14,
+    "tier": "general",
+    "type": "sudden-death",
+    "image": "Two-heads-are-better-than-one.png",
+    "answers": ["two heads are better than one"],
+    "hint": "A proverb about collaboration"
+  },
+  {
+    "id": 15,
+    "tier": "general",
+    "type": "sudden-death",
+    "image": "Two-wrongs-dont-make-a-right.png",
+    "answers": ["two wrongs dont make a right", "two wrongs don't make a right"],
+    "hint": "Retaliation doesnt fix the original problem"
+  },
+  {
+    "id": 16,
+    "tier": "general",
+    "type": "normal",
+    "image": "Unfinished-symphony.png",
+    "answers": ["unfinished symphony", "unfinished"],
+    "hint": "Schuberts most famous incomplete work"
+  },
+  {
+    "id": 17,
+    "tier": "general",
+    "type": "normal",
+    "image": "Up-to-you.png",
+    "answers": ["up to you", "your choice", "your call"],
+    "hint": "It is your decision to make"
+  },
+  {
+    "id": 18,
+    "tier": "general",
+    "type": "normal",
+    "image": "Wake-up.png",
+    "answers": ["wake up", "wakeup"],
+    "hint": "Time to stop sleeping"
+  },
+  {
+    "id": 19,
+    "tier": "general",
+    "type": "normal",
+    "image": "Warm-up.png",
+    "answers": ["warm up", "warmup"],
+    "hint": "What athletes do before a game"
+  },
+  {
+    "id": 20,
+    "tier": "general",
+    "type": "normal",
+    "image": "Weight.png",
+    "answers": ["weight"],
+    "hint": "How heavy something is"
+  },
+  {
+    "id": 21,
+    "tier": "general",
+    "type": "normal",
+    "image": "Winter.png",
+    "answers": ["winter"],
+    "hint": "The coldest season of the year"
+  },
+  {
+    "id": 22,
+    "tier": "general",
+    "type": "normal",
+    "image": "Wise-guy.png",
+    "answers": ["wise guy", "wiseguy", "smart aleck"],
+    "hint": "Someone who thinks they are always clever"
+  },
+  {
+    "id": 23,
+    "tier": "general",
+    "type": "normal",
+    "image": "space.jpeg",
+    "answers": ["space", "outer space"],
+    "hint": "The final frontier"
+  },
+  {
+    "id": 24,
+    "tier": "general",
+    "type": "sudden-death",
+    "image": "Wrapped-around-your-finger.png",
+    "answers": ["wrapped around your finger", "wrapped around my finger"],
+    "hint": "When someone does anything you ask"
+  },
+  {
+    "id": 25,
+    "tier": "general",
+    "type": "normal",
+    "image": "Wrong-end-of-the-stick.png",
+    "answers": ["wrong end of the stick", "got the wrong end of the stick"],
+    "hint": "Completely misunderstanding the situation"
+  },
+  {
+    "id": 26,
+    "tier": "general",
+    "type": "normal",
+    "image": "excuse-me.jpeg",
+    "answers": ["excuse me"],
+    "hint": "What you say to get someones attention politely"
+  },
+  {
+    "id": 27,
+    "tier": "general",
+    "type": "normal",
+    "image": "for-instance.jpeg",
+    "answers": ["for instance", "for example"],
+    "hint": "A phrase used to give an example"
+  },
+  {
+    "id": 28,
+    "tier": "general",
+    "type": "normal",
+    "image": "head-in-the-sand.jpeg",
+    "answers": ["head in the sand", "head in sand"],
+    "hint": "Ignoring obvious warning signs"
+  },
+  {
+    "id": 29,
+    "tier": "general",
+    "type": "sudden-death",
+    "image": "somewhere-over-the-rainbow.jpeg",
+    "answers": ["somewhere over the rainbow"],
+    "hint": "A classic song from The Wizard of Oz"
+  },
+  {
+    "id": 30,
+    "tier": "general",
+    "type": "normal",
+    "image": "square-meal.jpeg",
+    "answers": ["square meal", "a square meal"],
+    "hint": "A well-balanced, nutritious meal"
+  },
+  {
+    "id": 31,
+    "tier": "general",
+    "type": "normal",
+    "image": "too-funny-for-words.png",
+    "answers": ["too funny for words"],
+    "hint": "Hilariously beyond description"
+  },
+  {
+    "id": 32,
+    "tier": "general",
+    "type": "sudden-death",
+    "image": "what-goes-up-must-come-down.png",
+    "answers": ["what goes up must come down"],
+    "hint": "True of stock markets and gravity alike"
+  },
+  {
+    "id": 33,
+    "tier": "general",
+    "type": "normal",
+    "image": "x-marks-the-spot.jpeg",
+    "answers": ["x marks the spot"],
+    "hint": "Treasure map instruction"
+  },
+  {
+    "id": 34,
+    "tier": "general",
+    "type": "normal",
+    "image": "youre-under-arrest.png",
+    "answers": ["youre under arrest", "under arrest"],
+    "hint": "What a cop says when the cuffs come out"
+  }
+]
