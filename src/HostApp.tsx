@@ -263,7 +263,7 @@ function SetupScreen({ onRoomCreated }: { onRoomCreated: (puzzles: Puzzle[], tim
 
 function LobbyScreen({ code, players, onStart }: { code: string; players: Record<string, PlayerData>; onStart: () => void }) {
   const count = Object.keys(players).length
-  const url = window.location.href
+  const url = window.location.origin
 
   function copyUrl() {
     navigator.clipboard.writeText(url).catch(() => {})
