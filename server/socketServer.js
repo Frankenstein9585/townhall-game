@@ -18,9 +18,10 @@ function generateRoomCode() {
 }
 
 async function broadcastRoom(io, room) {
-  io.to(roomChannel(room.code)).emit('room:state', buildPublicRoom(room))
+  const serverNow = Date.now()
+  io.to(roomChannel(room.code)).emit('room:state', { ...buildPublicRoom(room), serverNow })
   if (room.hostSocketId) {
-    io.to(room.hostSocketId).emit('host:state', buildHostRoom(room))
+    io.to(room.hostSocketId).emit('host:state', { ...buildHostRoom(room), serverNow })
   }
 }
 
@@ -262,6 +263,44 @@ export function registerSocketHandlers(io, store) {
       room.sabotagedThisRound = []
       await store.saveRoom(room.code, room)
       ack?.({ ok: true, phase: 'puzzle-active', puzzleIndex: nextIndex })
+      await broadcastRoom(io, room)
+    })
+
+    socket.on('host:end_game', async (payload, ack) => {
+      const room = await store.getRoom(payload?.code)
+      if (!requireRoom(room, ack)) return
+      room.state.phase = 'game-over'
+      room.public.currentPuzzle = null
+      room.public.revealedAnswer = null
+      await store.saveRoom(room.code, room)
+      ack?.({ ok: true })
+      await broadcastRoom(io, room)
+    })
+
+    socket.on('host:restart_game', async (payload, ack) => {
+      const room = await store.getRoom(payload?.code)
+      if (!requireRoom(room, ack)) return
+
+      for (const player of Object.values(room.players)) {
+        player.score = 0
+        player.powerUps = []
+      }
+      room.state = {
+        phase: 'lobby',
+        currentPuzzleIndex: 0,
+        timerStart: 0,
+        timerDuration: room.timerDuration || 15000,
+      }
+      room.answers = {}
+      room.deltas = {}
+      room.wrongSubmissions = {}
+      room.powerupEvents = []
+      room.sabotagedThisRound = []
+      room.public.currentPuzzle = null
+      room.public.revealedAnswer = null
+
+      await store.saveRoom(room.code, room)
+      ack?.({ ok: true })
       await broadcastRoom(io, room)
     })
 

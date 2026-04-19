@@ -1,7 +1,7 @@
 import http from 'node:http'
 import express from 'express'
 import { Server } from 'socket.io'
-import { CLIENT_ORIGIN, SERVER_PORT } from './config.js'
+import { SERVER_PORT } from './config.js'
 import { createRoomStore } from './store.js'
 import { registerSocketHandlers } from './socketServer.js'
 

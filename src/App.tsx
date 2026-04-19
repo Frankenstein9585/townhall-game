@@ -22,7 +22,17 @@ function RulesScreen({ onBack }: { onBack: () => void }) {
       <div className="bg-gray-900 rounded-lg border border-gray-700 p-5 mb-4 text-center">
         <p className="text-gray-400 text-sm mb-3">Each round you'll see a rebus image like this:</p>
         <img src="/Rebus/think-outside-the-box.jpeg" alt="think outside the box" className="max-h-32 object-contain mx-auto" />
-        <p className="text-gray-500 text-xs mt-2 italic">Answer: "think outside the box"</p>
+        <div className="flex flex-wrap gap-x-2 gap-y-2 justify-center mt-3">
+          {['THINK', 'OUTSIDE', 'THE', 'BOX'].map((word, wi) => (
+            <div key={wi} className="flex gap-1">
+              {word.split('').map((letter, li) => (
+                <div key={li} className="w-7 h-9 border-2 border-gray-400 flex items-center justify-center text-xs font-bold text-white rounded">
+                  {letter}
+                </div>
+              ))}
+            </div>
+          ))}
+        </div>
         <p className="text-gray-400 text-sm mt-3">Decode the image and type your answer before time runs out!</p>
       </div>
 

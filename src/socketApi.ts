@@ -27,6 +27,7 @@ export interface SocketRoomSnapshot {
     correct: boolean
     powerUpUsed: PowerUpType | null
   }>>
+  serverNow?: number
   powerupEvents: Array<{
     player: string
     powerup: PowerUpType
@@ -37,7 +38,7 @@ export interface SocketRoomSnapshot {
 
 export class SocketApi {
   constructor() {
-    this.socket = io({
+    this.socket = io(import.meta.env.VITE_SOCKET_URL ?? '', {
       autoConnect: false,
       transports: ['websocket'],
     })
@@ -117,6 +118,19 @@ export class SocketApi {
 
   distributePowerUps(code: string) {
     return this.emitWithAck<{ ok: boolean }>('host:distribute_powerups', { code })
+  }
+
+  endGame(code: string) {
+    return this.emitWithAck<{ ok: boolean }>('host:end_game', { code })
+  }
+
+  restartGame(code: string) {
+    return this.emitWithAck<{ ok: boolean }>('host:restart_game', { code })
+  }
+
+  onRoomClosed(handler: () => void) {
+    this.socket.on('room:closed', handler)
+    return () => this.socket.off('room:closed', handler)
   }
 }
 

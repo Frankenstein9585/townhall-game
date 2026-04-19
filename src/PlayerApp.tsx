@@ -253,6 +253,8 @@ function PlayerPuzzleScreen({
   const [inputFocused, setInputFocused] = useState(false)
   const prevPowerUps = useRef<PowerUpType[]>(playerData.powerUps ?? [])
   const inputRef = useRef<HTMLInputElement>(null)
+  const answerRef = useRef(answer)
+  useEffect(() => { answerRef.current = answer }, [answer])
 
   useEffect(() => {
     const prev = prevPowerUps.current ?? []
@@ -279,7 +281,9 @@ function PlayerPuzzleScreen({
 
   async function autoSubmit() {
     if (submitted) return
-    await doSubmit(answer)
+    const current = answerRef.current
+    if (!current.trim() && puzzle.type !== 'sudden-death') return
+    await doSubmit(current)
   }
 
   async function doSubmit(ans: string) {
@@ -359,7 +363,7 @@ function PlayerPuzzleScreen({
         onBlur={() => setInputFocused(false)}
         autoFocus
         disabled={remaining === 0 || submitted}
-        className="fixed top-0 left-0 w-px h-px opacity-0 pointer-events-none"
+        className="fixed top-0 left-0 w-px h-px opacity-0 pointer-events-none text-base"
         aria-label="Answer input"
       />
 
@@ -527,6 +531,7 @@ export default function PlayerApp({ onExit }: { onExit: () => void }) {
   const socketApiRef = useRef<SocketApi | null>(null)
   const phaseRef = useRef<PlayerPhase>('join')
   const prevEventCountRef = useRef(0)
+  const clockOffsetRef = useRef(0)
   const [sabotageToast, setSabotageToast] = useState<{ names: string[]; total: number } | null>(null)
 
   useEffect(() => {
@@ -544,7 +549,15 @@ export default function PlayerApp({ onExit }: { onExit: () => void }) {
           setRoomCode(savedCode)
           setPlayerId(savedId)
           setPlayerName(savedName)
-          api.onRoomState(snap => setRoomSnapshot(snap))
+          api.onRoomState(snap => {
+            if (snap.serverNow) clockOffsetRef.current = Date.now() - snap.serverNow
+            setRoomSnapshot(snap)
+          })
+          api.onRoomClosed(() => {
+            localStorage.removeItem(PLAYER_SESSION_KEY)
+            setPhase('join')
+            phaseRef.current = 'join'
+          })
         } catch {
           localStorage.removeItem(PLAYER_SESSION_KEY)
           setPhase('join')
@@ -567,7 +580,15 @@ export default function PlayerApp({ onExit }: { onExit: () => void }) {
     setPlayerName(name)
     setPhase('lobby')
     phaseRef.current = 'lobby'
-    api.onRoomState(snap => setRoomSnapshot(snap))
+    api.onRoomState(snap => {
+      if (snap.serverNow) clockOffsetRef.current = Date.now() - snap.serverNow
+      setRoomSnapshot(snap)
+    })
+    api.onRoomClosed(() => {
+      localStorage.removeItem(PLAYER_SESSION_KEY)
+      setPhase('join')
+      phaseRef.current = 'join'
+    })
   }, [])
 
   const currentPuzzleIndex = roomSnapshot?.state.currentPuzzleIndex ?? 0
@@ -599,10 +620,8 @@ export default function PlayerApp({ onExit }: { onExit: () => void }) {
   useEffect(() => {
     if (!gamePhase) return
     if (gamePhase === 'lobby') {
-      if (phaseRef.current === 'reconnecting') {
-        setPhase('lobby')
-        phaseRef.current = 'lobby'
-      }
+      setPhase('lobby')
+      phaseRef.current = 'lobby'
       return
     }
     if (gamePhase === 'puzzle-active') {
@@ -658,7 +677,7 @@ export default function PlayerApp({ onExit }: { onExit: () => void }) {
           puzzle={currentPuzzle}
           puzzleIndex={currentPuzzleIndex}
           totalPuzzles={totalPuzzles}
-          timerStart={roomSnapshot?.state.timerStart ?? Date.now()}
+          timerStart={(roomSnapshot?.state.timerStart ?? Date.now()) + clockOffsetRef.current}
           timerDuration={roomSnapshot?.state.timerDuration ?? 15000}
           playerId={playerId}
           roomCode={roomCode}

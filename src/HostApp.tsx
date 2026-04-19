@@ -393,7 +393,7 @@ function HostPuzzleScreen({
 // ─── Results Screen (Host) ────────────────────────────────────────────────────
 
 function HostResultsScreen({
-  puzzle, puzzleIndex, totalPuzzles, players, deltas, wrongSubmissions, powerUpDropping, onNext,
+  puzzle, puzzleIndex, totalPuzzles, players, deltas, wrongSubmissions, powerUpDropping, onNext, onEndGame, onRestart,
 }: {
   puzzle: Puzzle
   puzzleIndex: number
@@ -403,6 +403,8 @@ function HostResultsScreen({
   wrongSubmissions: string[]
   powerUpDropping: boolean
   onNext: () => void
+  onEndGame: () => void
+  onRestart: () => void
 }) {
   const correctCount = Object.values(deltas).filter(d => d.correct).length
 
@@ -453,6 +455,20 @@ function HostResultsScreen({
       >
         {puzzleIndex + 1 >= totalPuzzles ? 'See Final Results →' : 'Next Puzzle →'}
       </button>
+      <div className="flex gap-3 mt-3">
+        <button
+          onClick={onEndGame}
+          className="flex-1 py-3 rounded-lg bg-gray-800 hover:bg-gray-700 border border-gray-700 text-white transition-colors font-semibold text-sm"
+        >
+          End Game
+        </button>
+        <button
+          onClick={onRestart}
+          className="flex-1 py-3 rounded-lg bg-gray-800 hover:bg-gray-700 border border-gray-700 text-white transition-colors font-semibold text-sm"
+        >
+          Restart Game
+        </button>
+      </div>
     </div>
   )
 }
@@ -514,15 +530,22 @@ export default function HostApp({ onExit }: { onExit: () => void }) {
   const displayDeltas = toDisplayDeltas(players, deltas)
 
   const socketApiRef = useRef<SocketApi | null>(null)
+  const clockOffsetRef = useRef(0)
 
   function attachHostStateListener(api: SocketApi) {
     api.onHostState(snapshot => {
+      if (snapshot.serverNow) clockOffsetRef.current = Date.now() - snapshot.serverNow
       setPlayers(snapshot.players as Record<string, HostPlayerRecord>)
       setGameState(snapshot.state)
       setPowerUpFeed(snapshot.powerupEvents)
       const puzzleKey = String(snapshot.state.currentPuzzleIndex)
       setAnsweredCount(Object.keys(snapshot.answers?.[puzzleKey] ?? {}).length)
-      if (snapshot.state.phase === 'puzzle-active') setHostPhase('puzzle-active')
+      if (snapshot.state.phase === 'lobby') {
+        setHostPhase('lobby')
+        setDeltas({})
+        setWrongSubmissions([])
+        setAnsweredCount(0)
+      } else if (snapshot.state.phase === 'puzzle-active') setHostPhase('puzzle-active')
       else if (snapshot.state.phase === 'puzzle-revealed') setHostPhase('puzzle-revealed')
       else if (snapshot.state.phase === 'game-over') setHostPhase('game-over')
     })
@@ -588,6 +611,14 @@ export default function HostApp({ onExit }: { onExit: () => void }) {
     const roundWrongs = result.wrongSubmissions
     setDeltas(roundDeltas)
     setWrongSubmissions(roundWrongs)
+  }
+
+  async function handleEndGame() {
+    await socketApiRef.current!.endGame(roomCode)
+  }
+
+  async function handleRestartGame() {
+    await socketApiRef.current!.restartGame(roomCode)
   }
 
   async function handleNext() {
@@ -658,7 +689,7 @@ export default function HostApp({ onExit }: { onExit: () => void }) {
           puzzle={currentPuzzle}
           puzzleIndex={currentIdx}
           totalPuzzles={puzzles.length}
-          timerStart={gameState?.timerStart ?? Date.now()}
+          timerStart={(gameState?.timerStart ?? Date.now()) + clockOffsetRef.current}
           timerDuration={gameState?.timerDuration ?? 15000}
           players={displayPlayers}
           answeredCount={answeredCount}
@@ -682,6 +713,8 @@ export default function HostApp({ onExit }: { onExit: () => void }) {
           wrongSubmissions={wrongSubmissions}
           powerUpDropping={powerUpDropping}
           onNext={handleNext}
+          onEndGame={handleEndGame}
+          onRestart={handleRestartGame}
         />
       </div>
     )
